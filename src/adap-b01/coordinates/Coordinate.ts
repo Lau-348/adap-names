@@ -1,5 +1,3 @@
-//First commit
-
 export class Coordinate {
 
     private x: number = 0;
