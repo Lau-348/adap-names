@@ -7,27 +7,58 @@ export class StringArrayName extends AbstractName {
 
     constructor(other: string[], delimiter?: string) {
         super();
-        throw new Error("needs implementation");
+        this.components = other;
+    }
+
+    protected doSetComponent(i: number, other: string): void {
+        this.components[i] = other;
+    }
+
+    protected doSetAllComponents(other: string[]): void {
+        this.components = other;
+    }
+
+    protected doGetComponents(): string[] {
+        return this.components;
     }
 
     getNoComponents(): number {
-        throw new Error("needs implementation");
+        return this.components.length;
     }
 
     getComponent(i: number): string {
-        throw new Error("needs implementation");
+        return this.components[i];
     }
     setComponent(i: number, c: string) {
-        throw new Error("needs implementation");
+        if (i <= this.getNoComponents()){
+            this.doSetComponent(i, c);
+        }
+        else {
+            throw new Error("Index out of range");
+        }
     }
 
     insert(i: number, c: string) {
-        throw new Error("needs implementation");
+        if (i <= this.getNoComponents()){
+            this.doSetAllComponents(this.doGetComponents().slice(0, i).concat([c], this.components.slice(i)));
+        }
+        else {
+            throw new Error("Index out of range");
+        }
     }
     append(c: string) {
-        throw new Error("needs implementation");
+        let components: string[] = this.doGetComponents();
+        components.push(c);
+        this.doSetAllComponents(components);
     }
     remove(i: number) {
-        throw new Error("needs implementation");
+        if (i <= this.getNoComponents()){
+            let components: string[] = this.doGetComponents();
+            components.splice(i, 1);
+            this.doSetAllComponents(components);
+        }
+        else {
+            throw new Error("Index out of range");
+        }
     }
 }
