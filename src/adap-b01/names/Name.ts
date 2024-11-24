@@ -27,7 +27,7 @@ export class Name {
     }
 
     // @methodtype conversion-method
-    public asNameString(delimiter: string = this.delimiter): string {
+    public asString(delimiter: string = this.delimiter): string {
         return this.components.join(delimiter);
     }
 

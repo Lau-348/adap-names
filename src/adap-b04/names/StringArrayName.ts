@@ -1,6 +1,9 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
+import { MethodFailureException } from "../common/MethodFailureException";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringArrayName extends AbstractName {
 
@@ -8,66 +11,104 @@ export class StringArrayName extends AbstractName {
 
     constructor(other: string[], delimiter?: string) {
         super();
-        throw new Error("needs implementation");
+        this.components = other;
     }
 
-    public clone(): Name {
-        throw new Error("needs implementation");
+    protected doSetComponent(i: number, other: string): void {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIsNotNullOrUndefined(other, "Other");
+        this.assertIndexInBound(i);
+        this.assertValidComponent(other, 0);
+
+        this.components[i] = other;
+        this.assertSetComponent(i, other);
+        this.assertClassInvariants();
     }
 
-    public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation");
+    protected doSetAllComponents(other: string[]): void {
+        this.assertIsNotNullOrUndefined(other, "Other names");
+        for(let i = 0; i < other.length; i++){
+            this.assertValidComponent(other[i], i);
+        }
+
+        this.components = other;
+        this.assertSetAllComponents(other);
+        this.assertClassInvariants();
     }
 
-    public toString(): string {
-        throw new Error("needs implementation");
+    protected doGetComponents(): string[] {
+        return this.components;
     }
 
-    public asDataString(): string {
-        throw new Error("needs implementation");
+    getNoComponents(): number {
+        let length = this.components.length;
+        this.assertIsNotNullOrUndefined(length, "Length");
+        return length;
     }
 
-    public isEqual(other: Name): boolean {
-        throw new Error("needs implementation");
+    getComponent(i: number): string {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIndexInBound(i);
+        let comp = this.components[i];
+        this.assertValidComponent(comp, 0);
+        return comp;
+    }
+    setComponent(i: number, c: string) {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIsNotNullOrUndefined(c, "Other");
+        this.assertIndexInBound(i);
+
+        this.doSetComponent(i, c);
+
+        this.assertClassInvariants();
+
     }
 
-    public getHashCode(): number {
-        throw new Error("needs implementation");
+    insert(i: number, c: string) {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIsNotNullOrUndefined(c, "Other");
+        this.assertIndexInBound(i);
+
+        this.doSetAllComponents(this.doGetComponents().slice(0, i).concat([c], this.components.slice(i)));
+        this.assertSetComponent(i, c);
+        this.assertClassInvariants();
+
+    }
+    append(c: string) {
+        this.assertIsNotNullOrUndefined(c, "Other");
+        let components: string[] = this.doGetComponents();
+        components.push(c);
+        this.doSetAllComponents(components);
+        this.assertSetComponent(this.getNoComponents(), c)
+        this.assertClassInvariants();
+    }
+    remove(i: number) {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIndexInBound(i);
+        let original_comp = this.getComponent(i);
+
+        let components: string[] = this.doGetComponents();
+        components.splice(i, 1);
+        
+        this.doSetAllComponents(components);
+
+        this.assertRemove(i, original_comp)
+        this.assertClassInvariants();
+
     }
 
-    public isEmpty(): boolean {
-        throw new Error("needs implementation");
+    protected assertSetComponent(i: number, c: string){
+        let condition: boolean = this.getComponent(i) === c;
+        MethodFailureException.assertCondition(condition, "Component could not properly be set");
     }
 
-    public getDelimiterCharacter(): string {
-        throw new Error("needs implementation");
+    protected assertSetAllComponents(c: string[]){
+        let condition: boolean = this.components === c;
+        MethodFailureException.assertCondition(condition, "All components could not be properly set");
     }
 
-    public getNoComponents(): number {
-        throw new Error("needs implementation");
-    }
-
-    public getComponent(i: number): string {
-        throw new Error("needs implementation");
-    }
-
-    public setComponent(i: number, c: string) {
-        throw new Error("needs implementation");
-    }
-
-    public insert(i: number, c: string) {
-        throw new Error("needs implementation");
-    }
-
-    public append(c: string) {
-        throw new Error("needs implementation");
-    }
-
-    public remove(i: number) {
-        throw new Error("needs implementation");
-    }
-
-    public concat(other: Name): void {
-        throw new Error("needs implementation");
+    protected assertRemove(i : number, original: string){
+        let condition: boolean = this.components[i] !== original;
+        MethodFailureException.assertCondition(condition, "Remove method did not properly function");
     }
 }
