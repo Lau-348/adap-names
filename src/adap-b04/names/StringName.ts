@@ -25,20 +25,23 @@ export class StringName extends AbstractName {
         this.assertIsNotNullOrUndefined(c, "Component");
         this.assertIndexInBound(i);
 
+        let backup = new StringName(this.name, this.delimiter);
+
         const components = this.name.split(this.delimiter);
         components[i] = c;
         this.name = components.join(this.delimiter);
 
-        this.assertSetComponent(i, c);
+        this.assertSetComponent(i, c, backup);
         this.assertClassInvariants();
     }
 
     protected doSetAllComponents(components: string[]): void {
         this.assertIsNotNullOrUndefined(components, "Components");
+        let backup = new StringName(this.name, this.delimiter);
         components.forEach((c, index) => this.assertValidComponent(c, index));
         this.name = components.join(this.delimiter);
 
-        this.assertSetAllComponents(components);
+        this.assertSetAllComponents(components, backup);
         this.assertClassInvariants();
     }
 
@@ -70,35 +73,38 @@ export class StringName extends AbstractName {
         this.assertIsNotNullOrUndefined(i, "Index");
         this.assertIsNotNullOrUndefined(c, "Component");
         this.assertIndexInBound(i);
+        let backup = new StringName(this.name, this.delimiter);
 
         const components = this.doGetComponents();
         components.splice(i, 0, c);
         this.doSetAllComponents(components);
 
-        this.assertInsert(i, c);
+        this.assertInsert(i, c, backup);
         this.assertClassInvariants();
     }
 
     append(c: string): void {
         this.assertIsNotNullOrUndefined(c, "Component");
+        let backup = new StringName(this.name, this.delimiter);
 
         const components = this.doGetComponents();
         components.push(c);
         this.doSetAllComponents(components);
 
-        this.assertAppend(c);
+        this.assertAppend(c, backup);
         this.assertClassInvariants();
     }
 
     remove(i: number): void {
         this.assertIsNotNullOrUndefined(i, "Index");
         this.assertIndexInBound(i);
+        let backup = new StringName(this.name, this.delimiter);
 
         const components = this.doGetComponents();
         const removed = components.splice(i, 1)[0];
         this.doSetAllComponents(components);
 
-        this.assertRemove(i, removed);
+        this.assertRemove(i, removed, backup);
         this.assertClassInvariants();
     }
 
@@ -115,30 +121,50 @@ export class StringName extends AbstractName {
         return hash;
     }
 
-    protected assertSetComponent(i: number, c: string): void {
+    protected assertSetComponent(i: number, c: string, backup: StringName): void {
         const condition = this.getComponent(i) === c;
+        if(!condition){
+            this.recover(backup)
+        }
         MethodFailureException.assertCondition(condition, "Component could not properly be set");
     }
 
-    protected assertSetAllComponents(components: string[]): void {
+    protected assertSetAllComponents(components: string[], backup: StringName): void {
         const current_components = this.doGetComponents();
         const condition = current_components === components;
+        if(!condition){
+            this.recover(backup)
+        }
         MethodFailureException.assertCondition(condition, "All components could not properly be set");
     }
 
-    protected assertInsert(i: number, c: string): void {
+    protected assertInsert(i: number, c: string, backup: StringName): void {
         const condition = this.getComponent(i) === c;
+        if(!condition){
+            this.recover(backup)
+        }
         MethodFailureException.assertCondition(condition, "Component could not properly be inserted");
     }
 
-    protected assertAppend(c: string): void {
+    protected assertAppend(c: string, backup: StringName): void {
         const lastIndex = this.getNoComponents() - 1;
         const condition = this.getComponent(lastIndex) === c;
+        if(!condition){
+            this.recover(backup)
+        }
         MethodFailureException.assertCondition(condition, "Component could not properly be appended");
     }
 
-    protected assertRemove(i: number, removed: string): void {
+    protected assertRemove(i: number, removed: string, backup: StringName): void {
         const condition = this.doGetComponents().indexOf(removed) === -1;
+        if(!condition){
+            this.recover(backup)
+        }
         MethodFailureException.assertCondition(condition, "Component could not properly be removed");
+    }
+
+    protected recover(other: StringName): void {
+        this.name = other.name;
+        this.delimiter = other.delimiter;
     }
 }
