@@ -1,6 +1,8 @@
 import { ExceptionType, AssertionDispatcher } from "../common/AssertionDispatcher";
+import { Exception } from "../common/Exception";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
+import { ServiceFailureException } from "../common/ServiceFailureException";
 
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
@@ -11,7 +13,9 @@ export class Node {
     protected parentNode: Directory;
 
     constructor(bn: string, pn: Directory) {
+        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
         this.doSetBaseName(bn);
+        
         this.parentNode = pn; // why oh why do I have to set this
         this.initialize(pn);
     }
@@ -58,8 +62,26 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        throw new Error("needs implementation or deletion");
+        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+        let result: Set<Node> = new Set<Node>();
+
+        if (bn == this.getBaseName()) 
+        {
+            result.add(this);
+        }
+
+        try 
+        {
+            this.assertClassInvariants();
+        } 
+        catch (e: any) 
+        {
+            ServiceFailureException.assertCondition(false, "Can not find nodes correctly", e as Exception);
+        }
+
+        return result;
     }
+
 
     protected assertClassInvariants(): void {
         const bn: string = this.doGetBaseName();
