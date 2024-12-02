@@ -2,7 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { MethodFailureException } from "../common/MethodFailureException";
+import { MethodFailedException } from "../common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringArrayName extends AbstractName {
@@ -105,17 +105,17 @@ export class StringArrayName extends AbstractName {
 
     protected assertSetComponent(i: number, c: string, backup: StringArrayName){
         let condition: boolean = this.getComponent(i) === c;
-        MethodFailureException.assertCondition(condition, "Component could not properly be set");
+        MethodFailedException.assertCondition(condition, "Component could not properly be set");
     }
 
     protected assertSetAllComponents(c: string[], backup: StringArrayName){
         let condition: boolean = this.components === c;
-        MethodFailureException.assertCondition(condition, "All components could not be properly set");
+        MethodFailedException.assertCondition(condition, "All components could not be properly set");
     }
 
     protected assertRemove(i : number, original: string, backup: StringArrayName){
         let condition: boolean = this.components[i] !== original;
-        MethodFailureException.assertCondition(condition, "Remove method did not properly function");
+        MethodFailedException.assertCondition(condition, "Remove method did not properly function");
     }
 
     protected recover(other: StringArrayName): void {

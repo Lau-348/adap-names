@@ -1,7 +1,7 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { MethodFailureException } from "../common/MethodFailureException";
+import { MethodFailedException } from "../common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
 
 export abstract class AbstractName implements Name {
@@ -118,7 +118,7 @@ export abstract class AbstractName implements Name {
 
     protected assertValidDelimiter(delimiter: string): void {
         let condition: boolean = delimiter.length === 1 && delimiter !== ESCAPE_CHARACTER;
-        MethodFailureException.assertCondition(condition, "Delimiter is not correctly formatted");
+        MethodFailedException.assertCondition(condition, "Delimiter is not correctly formatted");
     }
 
     protected assertNonNegativeComponentCount(count: number): void {
@@ -140,7 +140,7 @@ export abstract class AbstractName implements Name {
 
     protected assertPostconditionAsString(result: string, componentCount: number): void {
         let condition: boolean = !(result.length === 0 && componentCount > 0);
-        MethodFailureException.assertCondition(condition, "Generated string cannot be empty if components exist");
+        MethodFailedException.assertCondition(condition, "Generated string cannot be empty if components exist");
     }
 
     protected assertIsNotNullOrUndefined(value: any, name: string): void {

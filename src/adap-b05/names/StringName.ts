@@ -2,7 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { MethodFailureException } from "../common/MethodFailureException";
+import { MethodFailedException } from "../common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringName extends AbstractName {
@@ -126,7 +126,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be set");
+        MethodFailedException.assertCondition(condition, "Component could not properly be set");
     }
 
     protected assertSetAllComponents(components: string[], backup: StringName): void {
@@ -135,7 +135,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "All components could not properly be set");
+        MethodFailedException.assertCondition(condition, "All components could not properly be set");
     }
 
     protected assertInsert(i: number, c: string, backup: StringName): void {
@@ -143,7 +143,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be inserted");
+        MethodFailedException.assertCondition(condition, "Component could not properly be inserted");
     }
 
     protected assertAppend(c: string, backup: StringName): void {
@@ -152,7 +152,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be appended");
+        MethodFailedException.assertCondition(condition, "Component could not properly be appended");
     }
 
     protected assertRemove(i: number, removed: string, backup: StringName): void {
@@ -160,7 +160,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be removed");
+        MethodFailedException.assertCondition(condition, "Component could not properly be removed");
     }
 
     protected recover(other: StringName): void {

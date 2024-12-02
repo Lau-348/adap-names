@@ -1,3 +1,4 @@
+
 import { IllegalArgumentException } from "./IllegalArgumentException";
 import { InvalidStateException } from "./InvalidStateException";
 import { MethodFailedException } from "./MethodFailedException";
