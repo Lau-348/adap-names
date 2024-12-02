@@ -32,9 +32,9 @@ function createFileSystem(): RootNode {
 
 describe("Basic naming test", () => {
   it("test name checking", () => {
-    // let fs: RootNode = createFileSystem();
-    // let ls: Node = [...fs.findNodes("ls")][0];
-    // expect(ls.getFullName().isEqual(new StringName("/usr/bin/ls", '/')));
+    let fs: RootNode = createFileSystem();
+    let ls: Node = [...fs.findNodes("ls")][0];
+    expect(ls.getFullName().isEqual(new StringName("/usr/bin/ls", '/')));
   });
 });
 
@@ -61,16 +61,17 @@ describe("Buggy setup test", () => {
   it("test finding files", () => {
     let threwException: boolean = false;
     try {
-       let fs: RootNode = createBuggySetup();
-       fs.findNodes("ls");
-     } catch(er) {
-       threwException = true;
-       let ex: Exception = er as Exception;
-       expect(ex instanceof ServiceFailureException);
-       expect(ex.hasTrigger()).toBe(true);
-       let tx: Exception = ex.getTrigger();
-       expect(tx instanceof InvalidStateException);
-     }
-       expect(threwException).toBe(true);
+      let fs: RootNode = createBuggySetup();
+      fs.findNodes("ls");
+    } catch(er) {
+      threwException = true;
+      let ex: Exception = er as Exception;
+      expect(ex instanceof ServiceFailureException);
+      expect(ex.hasTrigger());
+      let tx: Exception = ex.getTrigger();
+      expect(tx instanceof InvalidStateException);
+    }
+    expect(threwException);
   });
 });
+

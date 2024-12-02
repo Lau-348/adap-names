@@ -63,6 +63,7 @@ export class Node {
      */
     public findNodes(bn: string): Set<Node> {
         this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+        this.assertClassInvariants();
         let result: Set<Node> = new Set<Node>();
 
         if (bn == this.getBaseName()) 
