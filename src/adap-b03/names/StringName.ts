@@ -60,7 +60,7 @@ export class StringName extends AbstractName {
     }
 
     public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
+        throw new Error("needs implementation");
     }
 }
    
