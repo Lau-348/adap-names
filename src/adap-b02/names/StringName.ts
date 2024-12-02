@@ -8,51 +8,111 @@ export class StringName implements Name {
     protected noComponents: number = 0;
 
     constructor(other: string, delimiter?: string) {
-        throw new Error("needs implementation or deletion");
+        if(delimiter != undefined && delimiter != null)
+        {
+            this.delimiter = delimiter;
+        }
+        this.name = other;
+    }
+
+    protected doGetName(): string {
+        return this.name;
+    }
+
+    protected doSetName(other: string): void {
+        this.name = other;
+    }
+
+    protected doGetDelimiter(): string {
+        return this.delimiter;
+    }
+
+    public getName(): string {
+        return this.doGetName();
+    }
+
+    public setName(other: string): void {
+        this.doSetName(other);
+    }
+
+    public getDelimiter(): string {
+        return this.doGetDelimiter();
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        let components = this.getAllComponents();
+        return components.join(delimiter); 
     }
 
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+        return this.getName().replace(this.getDelimiter(), ESCAPE_CHARACTER + this.delimiter);
     }
 
     public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+        return this.getName().length === 0;
+    }
+
+    public getDelimiterCharacter(): string {
+        return this.getDelimiter();
     }
 
     public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        if (!this.isEmpty()){
+            return this.getName().split(this.getDelimiter()).length;
+        }
+        else{
+            return 0;
+        }      
+    }
+
+    public getAllComponents(): string[] {
+        return this.getName().split(this.getDelimiter());
     }
 
     public getComponent(x: number): string {
-        throw new Error("needs implementation or deletion");
+        if (!this.isEmpty()){
+            return this.getAllComponents()[x];
+        }
+        else{
+            throw new Error("Name String is empty!");
+        }    
     }
 
     public setComponent(n: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        let components = this.getAllComponents()
+        if (components.length >= n){
+            components[n] = c;
+            this.setName(components.join(this.getDelimiter()));
+        }
+        else{
+            throw new Error("Index out of bound!");
+        }
     }
 
     public insert(n: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        let components = this.getAllComponents()
+        if (components.length >= n){
+            components = components.slice(0, n).concat([c], components.slice(n));
+            this.setName(components.join(this.getDelimiter()));
+        }
+        else{
+            throw new Error("Index out of bound!");
+        }
     }
 
     public append(c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.setName(this.getName() + this.getDelimiter() + c);
     }
 
     public remove(n: number): void {
-        throw new Error("needs implementation or deletion");
+        let components = this.getAllComponents();
+        components.splice(n, 1);
+        this.setName(components.join(this.getDelimiter()));
     }
 
     public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+        let concat_name = this.getName() + this.getDelimiter() + other.asString();
+        this.setName(concat_name);
     }
 
 }

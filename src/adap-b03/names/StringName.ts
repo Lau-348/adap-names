@@ -5,67 +5,62 @@ import { AbstractName } from "./AbstractName";
 export class StringName extends AbstractName {
 
     protected name: string = "";
-    protected noComponents: number = 0;
+    protected length: number = 0;
 
     constructor(other: string, delimiter?: string) {
         super();
-        throw new Error("needs implementation or deletion");
+        this.name = other;
+        this.length = other.length;
     }
 
-    public clone(): Name {
-        throw new Error("needs implementation or deletion");
+    getNoComponents(): number {
+        return this.name.split(this.delimiter).length;
     }
 
-    public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+    getComponent(i: number): string {
+        return this.name.split(this.delimiter)[i];
+    }
+    setComponent(i: number, c: string) {
+        const components = this.name.split(this.delimiter);
+        if(components.length >= i){
+            components[i] = c;
+            this.name = components.join(this.delimiter);
+            this.length = this.name.length;
+        }
+        else{
+            throw new Error("Index out of bound!");
+        }
     }
 
-    public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+    insert(i: number, c: string) {
+        const components = this.name.split(this.delimiter);
+        if(components.length >= i){
+            components.splice(i, 0, c);
+            this.name = components.join(this.delimiter);
+            this.length = this.name.length;
+        }
+        else{
+            throw new Error("Index out of bound!");
+        }
     }
-
-    public isEqual(other: Name): boolean {
-        throw new Error("needs implementation or deletion");
+    append(c: string) {
+        this.name += this.delimiter + c;
+        this.length = this.name.length;
+    }
+    remove(i: number) {
+        const components = this.name.split(this.delimiter);
+        if(components.length >= i){
+            components.splice(i, 1);
+            this.name = components.join(this.delimiter);
+            this.length = this.name.length;
+        }
+        else{
+            throw new Error("Index out of bound!");
+        }
     }
 
     public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
+        throw new Error("needs implementation");
     }
-
-    public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public setComponent(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public insert(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public append(c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public remove(i: number) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
-    }
-
 }
+   

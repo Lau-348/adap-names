@@ -6,16 +6,16 @@ import { Exception } from "./Exception";
  */
 export class InvalidStateException extends Exception {
 
-    static assertIsNotNullOrUndefined(o: Object | null, m: string = "null or undefined", t?: Exception): void {
-        this.assertCondition(!this.isNullOrUndefined(o), m, t);
+    static assertNotNullOrUndefined(o: Object | null, exMsg: string = "null or undefined"): void {
+        this.assertCondition(this.isNullOrUndefined(o), exMsg);
     }
     
-    static assertCondition(c: boolean, m: string = "invalid state", t?: Exception): void {
-        if (!c) throw new InvalidStateException(m, t);
+    static assertCondition(cond: boolean, exMsg: string): void {
+        if (!cond) throw new InvalidStateException(exMsg);
     }
 
-    constructor(m: string, t?: Exception) {
-        super(m, t);
+    constructor(m: string) {
+        super(m);
     }
     
 }
