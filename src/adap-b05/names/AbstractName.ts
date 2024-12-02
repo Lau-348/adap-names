@@ -12,9 +12,9 @@ export abstract class AbstractName implements Name {
         this.assertIsNotNullOrUndefined(delimiter, "Delimiter");
         this.assertValidDelimiter(delimiter);
 
-        if (delimiter != null && delimiter != undefined) {
-            this.delimiter = delimiter;
-        }
+        
+        this.delimiter = delimiter;
+       
         this.assertSetDelimiter(delimiter);
         this.assertClassInvariants();
     }
@@ -101,19 +101,19 @@ export abstract class AbstractName implements Name {
         this.assertValidOther(other);
         for(let i = 0; i < other.getNoComponents(); i++){
             let other_component: string = other.getComponent(i);
-            this.assertValidComponent(other_component, i);
             this.append(other_component);
         }
         this.assertClassInvariants();
     }
 
     protected assertClassInvariants(): void {
+        console.log("Del:" + this.delimiter)
         InvalidStateException.assertNotNullOrUndefined(this.delimiter, "Delimiter");
 
         let condition: boolean = this.delimiter.length === 1 && this.delimiter !== ESCAPE_CHARACTER;
         InvalidStateException.assertCondition(condition, "Delimiter not correctly set");
 
-        this.assertNonNegativeComponentCount(this.getNoComponents());
+        //this.assertNonNegativeComponentCount(this.getNoComponents());
     }
 
     protected assertValidDelimiter(delimiter: string): void {
@@ -132,31 +132,25 @@ export abstract class AbstractName implements Name {
         InvalidStateException.assertCondition(condition, `Other name must not be empty`);
     }
 
-    protected assertValidComponent(component: string, index: number): void {
-        this.assertIsNotNullOrUndefined(component, `Component at index ${index}`);
-        let condition: boolean = component !== "";
-        InvalidStateException.assertCondition(condition, `Component at index ${index} must not be empty`);
-    }
-
     protected assertPostconditionAsString(result: string, componentCount: number): void {
         let condition: boolean = !(result.length === 0 && componentCount > 0);
         MethodFailedException.assertCondition(condition, "Generated string cannot be empty if components exist");
     }
 
     protected assertIsNotNullOrUndefined(value: any, name: string): void {
-        let condition: boolean = value === null || null === undefined;
+        let condition: boolean = value !== null || null !== undefined;
         IllegalArgumentException.assertCondition(condition, `${name} must not be null or undefined`);
     }
 
     protected assertSetDelimiter(delimiter: string): void {
         //this.assertIsNotNullOrUndefined(delimiter, `Delimiter`);
         let condition: boolean = this.delimiter === delimiter
-        IllegalArgumentException.assertCondition(condition, `${name} must not be null or undefined`);
+        IllegalArgumentException.assertCondition(condition, `${delimiter} must not be null or undefined`);
     }
 
     protected assertIndexInBound(i: number): void {
         IllegalArgumentException.assertIsNotNullOrUndefined(i, "Index");
-        let condition: boolean = i > 0 && i <= this.getNoComponents();
+        let condition: boolean = i >= 0 && i <= this.getNoComponents();
         IllegalArgumentException.assertCondition(condition, "Index out of bound");
     }
 

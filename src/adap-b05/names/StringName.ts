@@ -11,7 +11,7 @@ export class StringName extends AbstractName {
     protected delimiter: string = DEFAULT_DELIMITER;
 
     constructor(other: string, delimiter?: string) {
-        super();
+        super(delimiter);
         this.assertIsNotNullOrUndefined(other, "Other string");
         this.name = other;
         if (delimiter) {
@@ -37,11 +37,9 @@ export class StringName extends AbstractName {
 
     protected doSetAllComponents(components: string[]): void {
         this.assertIsNotNullOrUndefined(components, "Components");
-        let backup = new StringName(this.name, this.delimiter);
-        components.forEach((c, index) => this.assertValidComponent(c, index));
+
         this.name = components.join(this.delimiter);
 
-        this.assertSetAllComponents(components, backup);
         this.assertClassInvariants();
     }
 
@@ -60,7 +58,6 @@ export class StringName extends AbstractName {
         this.assertIndexInBound(i);
 
         const component = this.doGetComponents()[i];
-        this.assertValidComponent(component, i);
 
         return component;
     }
@@ -129,14 +126,7 @@ export class StringName extends AbstractName {
         MethodFailedException.assertCondition(condition, "Component could not properly be set");
     }
 
-    protected assertSetAllComponents(components: string[], backup: StringName): void {
-        const current_components = this.doGetComponents();
-        const condition = current_components === components;
-        if(!condition){
-            this.recover(backup)
-        }
-        MethodFailedException.assertCondition(condition, "All components could not properly be set");
-    }
+
 
     protected assertInsert(i: number, c: string, backup: StringName): void {
         const condition = this.getComponent(i) === c;
