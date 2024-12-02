@@ -1,6 +1,9 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
+import { MethodFailureException } from "../common/MethodFailureException";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringArrayName extends AbstractName {
 
@@ -8,62 +11,115 @@ export class StringArrayName extends AbstractName {
 
     constructor(other: string[], delimiter?: string) {
         super();
-        throw new Error("needs implementation or deletion");
+        this.components = other;
     }
 
-    public clone(): Name {
-        throw new Error("needs implementation or deletion");
+    protected doSetComponent(i: number, other: string): void {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIsNotNullOrUndefined(other, "Other");
+        this.assertIndexInBound(i);
+        let backup = new StringArrayName(this.components, this.delimiter);
+
+        this.assertValidComponent(other, 0);
+
+        this.components[i] = other;
+        this.assertSetComponent(i, other, backup);
+        this.assertClassInvariants();
     }
 
-    public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+    protected doSetAllComponents(other: string[]): void {
+        this.assertIsNotNullOrUndefined(other, "Other names");
+        let backup = new StringArrayName(this.components, this.delimiter);
+        for(let i = 0; i < other.length; i++){
+            this.assertValidComponent(other[i], i);
+        }
+
+        this.components = other;
+        this.assertSetAllComponents(other, backup);
+        this.assertClassInvariants();
     }
 
-    public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+    protected doGetComponents(): string[] {
+        return this.components;
     }
 
-    public isEqual(other: Name): boolean {
-        throw new Error("needs implementation or deletion");
+    getNoComponents(): number {
+        let length = this.components.length;
+        this.assertIsNotNullOrUndefined(length, "Length");
+        return length;
     }
 
-    public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
+    getComponent(i: number): string {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIndexInBound(i);
+        let comp = this.components[i];
+        this.assertValidComponent(comp, 0);
+        return comp;
+    }
+    setComponent(i: number, c: string) {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIsNotNullOrUndefined(c, "Other");
+        this.assertIndexInBound(i);
+
+        this.doSetComponent(i, c);
+
+        this.assertClassInvariants();
+
     }
 
-    public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+    insert(i: number, c: string) {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIsNotNullOrUndefined(c, "Other");
+        this.assertIndexInBound(i);
+        let backup = new StringArrayName(this.components, this.delimiter);
+
+        this.doSetAllComponents(this.doGetComponents().slice(0, i).concat([c], this.components.slice(i)));
+        this.assertSetComponent(i, c, backup);
+        this.assertClassInvariants();
+
+    }
+    append(c: string) {
+        this.assertIsNotNullOrUndefined(c, "Other");
+        let backup = new StringArrayName(this.components, this.delimiter);
+        let components: string[] = this.doGetComponents();
+        components.push(c);
+        this.doSetAllComponents(components);
+        this.assertSetComponent(this.getNoComponents(), c, backup)
+        this.assertClassInvariants();
+    }
+    remove(i: number) {
+        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assertIndexInBound(i);
+        let backup = new StringArrayName(this.components, this.delimiter);
+        let original_comp = this.getComponent(i);
+
+        let components: string[] = this.doGetComponents();
+        components.splice(i, 1);
+        
+        this.doSetAllComponents(components);
+
+        this.assertRemove(i, original_comp, backup)
+        this.assertClassInvariants();
+
     }
 
-    public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+    protected assertSetComponent(i: number, c: string, backup: StringArrayName){
+        let condition: boolean = this.getComponent(i) === c;
+        MethodFailureException.assertCondition(condition, "Component could not properly be set");
     }
 
-    public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+    protected assertSetAllComponents(c: string[], backup: StringArrayName){
+        let condition: boolean = this.components === c;
+        MethodFailureException.assertCondition(condition, "All components could not be properly set");
     }
 
-    public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+    protected assertRemove(i : number, original: string, backup: StringArrayName){
+        let condition: boolean = this.components[i] !== original;
+        MethodFailureException.assertCondition(condition, "Remove method did not properly function");
     }
 
-    public setComponent(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public insert(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public append(c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public remove(i: number) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+    protected recover(other: StringArrayName): void {
+        this.components = other.components;
+        this.delimiter = other.delimiter;
     }
 }
