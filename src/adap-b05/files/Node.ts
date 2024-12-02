@@ -62,25 +62,25 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+        const nodes = new Set<Node>();
+    
+        try {
+            this._findInnerNodes(bn, nodes);
+        } catch (error) {
+            throw new ServiceFailureException(`findNodes operation failed for base name: ${bn}`, error as Exception);
+        }
+    
+        return nodes;
+    }
+    
+    public _findInnerNodes(bn: string, nodeSet: Set<Node>) {
         this.assertClassInvariants();
-        let result: Set<Node> = new Set<Node>();
-
-        if (bn == this.getBaseName()) 
-        {
-            result.add(this);
+    
+        if (bn.length > 0 && bn === this.doGetBaseName()) {
+            if (!nodeSet.has(this)) {
+                nodeSet.add(this);
+            }
         }
-
-        try 
-        {
-            this.assertClassInvariants();
-        } 
-        catch (e: any) 
-        {
-            ServiceFailureException.assertCondition(false, "Can not find nodes correctly", e as Exception);
-        }
-
-        return result;
     }
 
 

@@ -67,7 +67,7 @@ describe("Buggy setup test", () => {
       threwException = true;
       let ex: Exception = er as Exception;
       expect(ex instanceof ServiceFailureException);
-      expect(ex.hasTrigger());
+      expect(ex.hasTrigger()).toBe(true);
       let tx: Exception = ex.getTrigger();
       expect(tx instanceof InvalidStateException);
     }
