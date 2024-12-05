@@ -7,7 +7,7 @@ export class StringName extends AbstractName {
     protected name: string = "";
     protected length: number = 0;
 
-    constructor(other: string, delimiter?: string) {
+    constructor(source: string, delimiter?: string) {
         super();
         this.name = other;
         this.length = other.length;

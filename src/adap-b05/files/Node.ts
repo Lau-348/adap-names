@@ -1,5 +1,4 @@
-import { ExceptionType, AssertionDispatcher } from "../common/AssertionDispatcher";
-import { Exception } from "../common/Exception";
+import { ExceptionType } from "../common/AssertionDispatcher";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { ServiceFailureException } from "../common/ServiceFailureException";
@@ -22,12 +21,12 @@ export class Node {
 
     protected initialize(pn: Directory): void {
         this.parentNode = pn;
-        this.parentNode.add(this);
+        this.parentNode.addChildNode(this);
     }
 
     public move(to: Directory): void {
-        this.parentNode.remove(this);
-        to.add(this);
+        this.parentNode.removeChildNode(this);
+        to.addChildNode(this);
         this.parentNode = to;
     }
 
@@ -62,27 +61,8 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        const nodes = new Set<Node>();
-    
-        try {
-            this._findInnerNodes(bn, nodes);
-        } catch (error) {
-            throw new ServiceFailureException(`findNodes operation failed for base name: ${bn}`, error as Exception);
-        }
-    
-        return nodes;
+        throw new Error("needs implementation or deletion");
     }
-    
-    public _findInnerNodes(bn: string, nodeSet: Set<Node>) {
-        this.assertClassInvariants();
-    
-        if (bn.length > 0 && bn === this.doGetBaseName()) {
-            if (!nodeSet.has(this)) {
-                nodeSet.add(this);
-            }
-        }
-    }
-
 
     protected assertClassInvariants(): void {
         const bn: string = this.doGetBaseName();

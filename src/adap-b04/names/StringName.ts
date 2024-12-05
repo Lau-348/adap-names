@@ -10,7 +10,7 @@ export class StringName extends AbstractName {
     protected name: string = "";
     protected delimiter: string = DEFAULT_DELIMITER;
 
-    constructor(other: string, delimiter?: string) {
+    constructor(source: string, delimiter?: string) {
         super();
         this.assertIsNotNullOrUndefined(other, "Other string");
         this.name = other;
