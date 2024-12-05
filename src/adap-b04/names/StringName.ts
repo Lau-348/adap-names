@@ -2,7 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { MethodFailureException } from "../common/MethodFailureException";
+import { MethodFailedException } from "../common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringName extends AbstractName {
@@ -11,12 +11,9 @@ export class StringName extends AbstractName {
     protected delimiter: string = DEFAULT_DELIMITER;
 
     constructor(source: string, delimiter?: string) {
-        super();
-        this.assertIsNotNullOrUndefined(other, "Other string");
-        this.name = other;
-        if (delimiter) {
-            this.delimiter = delimiter;
-        }
+        super(delimiter);
+        this.assertIsNotNullOrUndefined(source, "Source string");
+        this.name = source;
         this.assertClassInvariants();
     }
 
@@ -86,11 +83,13 @@ export class StringName extends AbstractName {
     append(c: string): void {
         this.assertIsNotNullOrUndefined(c, "Component");
         let backup = new StringName(this.name, this.delimiter);
-
-        const components = this.doGetComponents();
-        components.push(c);
-        this.doSetAllComponents(components);
-
+        
+        if (this.isEmpty()) {
+            this.name = c;
+        } else {
+            this.name = this.name + this.delimiter + c;
+        }
+        
         this.assertAppend(c, backup);
         this.assertClassInvariants();
     }
@@ -99,12 +98,13 @@ export class StringName extends AbstractName {
         this.assertIsNotNullOrUndefined(i, "Index");
         this.assertIndexInBound(i);
         let backup = new StringName(this.name, this.delimiter);
+        let original = this.getComponent(i);
 
         const components = this.doGetComponents();
-        const removed = components.splice(i, 1)[0];
-        this.doSetAllComponents(components);
+        components.splice(i, 1);
+        this.name = components.join(this.delimiter);
 
-        this.assertRemove(i, removed, backup);
+        this.assertRemove(i, original, backup);
         this.assertClassInvariants();
     }
 
@@ -126,7 +126,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be set");
+        MethodFailedException.assert(condition, "Component could not properly be set");
     }
 
     protected assertSetAllComponents(components: string[], backup: StringName): void {
@@ -135,7 +135,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "All components could not properly be set");
+        MethodFailedException.assert(condition, "All components could not properly be set");
     }
 
     protected assertInsert(i: number, c: string, backup: StringName): void {
@@ -143,7 +143,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be inserted");
+        MethodFailedException.assert(condition, "Component could not properly be inserted");
     }
 
     protected assertAppend(c: string, backup: StringName): void {
@@ -152,7 +152,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be appended");
+        MethodFailedException.assert(condition, "Component could not properly be appended");
     }
 
     protected assertRemove(i: number, removed: string, backup: StringName): void {
@@ -160,7 +160,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailureException.assertCondition(condition, "Component could not properly be removed");
+        MethodFailedException.assert(condition, "Component could not properly be removed");
     }
 
     protected recover(other: StringName): void {

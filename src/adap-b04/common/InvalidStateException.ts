@@ -10,8 +10,8 @@ export class InvalidStateException extends Exception {
         if (!c) throw new InvalidStateException(m, t);
     }
 
-    constructor(m: string) {
-        super(m);
+    constructor(m: string, t?: Exception) {
+        super(m, t);
     }
     
 }

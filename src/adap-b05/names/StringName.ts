@@ -10,9 +10,6 @@ export class StringName extends AbstractName {
     protected name: string = "";
     protected delimiter: string = DEFAULT_DELIMITER;
 
-    constructor(source: string, delimiter?: string) {
-        super();
-        throw new Error("needs implementation or deletion");
     constructor(other: string, delimiter?: string) {
         super(delimiter);
         this.assertIsNotNullOrUndefined(other, "Other string");
@@ -126,7 +123,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailedException.assertCondition(condition, "Component could not properly be set");
+        MethodFailedException.assert(condition, "Component could not properly be set");
     }
 
 
@@ -136,7 +133,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailedException.assertCondition(condition, "Component could not properly be inserted");
+        MethodFailedException.assert(condition, "Component could not properly be inserted");
     }
 
     protected assertAppend(c: string, backup: StringName): void {
@@ -145,7 +142,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailedException.assertCondition(condition, "Component could not properly be appended");
+        MethodFailedException.assert(condition, "Component could not properly be appended");
     }
 
     protected assertRemove(i: number, removed: string, backup: StringName): void {
@@ -153,7 +150,7 @@ export class StringName extends AbstractName {
         if(!condition){
             this.recover(backup)
         }
-        MethodFailedException.assertCondition(condition, "Component could not properly be removed");
+        MethodFailedException.assert(condition, "Component could not properly be removed");
     }
 
     protected recover(other: StringName): void {

@@ -1,4 +1,4 @@
-import { ExceptionType } from "../common/AssertionDispatcher";
+
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { ServiceFailureException } from "../common/ServiceFailureException";
@@ -12,7 +12,6 @@ export class Node {
     protected parentNode: Directory;
 
     constructor(bn: string, pn: Directory) {
-        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
         this.doSetBaseName(bn);
         
         this.parentNode = pn; // why oh why do I have to set this
@@ -62,16 +61,6 @@ export class Node {
      */
     public findNodes(bn: string): Set<Node> {
         throw new Error("needs implementation or deletion");
-    }
-
-    protected assertClassInvariants(): void {
-        const bn: string = this.doGetBaseName();
-        this.assertIsValidBaseName(bn, ExceptionType.CLASS_INVARIANT);
-    }
-
-    protected assertIsValidBaseName(bn: string, et: ExceptionType): void {
-        const condition: boolean = (bn != "");
-        AssertionDispatcher.dispatch(et, condition, "invalid base name");
     }
 
 }
