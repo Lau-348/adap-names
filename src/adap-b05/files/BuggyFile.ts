@@ -14,12 +14,8 @@ export class BuggyFile extends File {
      * @returns base name, but throws ServiceFailureException
      */
     protected doGetBaseName(): string {
-        try {
-            this.baseName = ""; // This invalidates the state
-            throw new InvalidStateException("Invalid file state: empty base name");
-        } catch (error) {
-            throw new ServiceFailureException("File service failed", error as Error);
-        }
+        this.baseName = "";
+        return super.doGetBaseName();
     }
 
 }

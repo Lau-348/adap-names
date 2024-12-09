@@ -1,4 +1,5 @@
 
+import { Exception } from "../common/Exception";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { ServiceFailureException } from "../common/ServiceFailureException";
@@ -60,13 +61,28 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        const results: Set<Node> = new Set<Node>();
-
-        if (this.baseName === bn) {
-            results.add(this);
+        const result = new Set<Node>();
+        try {
+          if (this.getBaseName() === bn) {
+            result.add(this); // Add this node if it matches
+          }
+    
+          this.assertClassInvariants();
+        } catch (er: any) {
+          let ex: Exception = er as Exception;
+          let tx: Exception = ex.hasTrigger() ?ex.getTrigger() :ex;
+          throw new ServiceFailureException("Service failed", tx as Exception);
         }
+        return result;
+      }
 
-        return results;
-    }
-
+      protected assertIsValidBaseName(bn: string, et: Exception): void {
+        const condition: boolean = (bn != "");
+        InvalidStateException.assert(condition, "invalid base name");
+      }
+      
+      protected assertClassInvariants(): void {
+        const bn: string = this.doGetBaseName();
+        this.assertIsValidBaseName(bn, new InvalidStateException("Invalid base name"));
+      }
 }
