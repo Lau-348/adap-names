@@ -9,7 +9,7 @@ export abstract class AbstractName implements Name {
     protected delimiter: string = DEFAULT_DELIMITER;
 
     constructor(delimiter: string = DEFAULT_DELIMITER) {
-        this.assertIsNotNullOrUndefined(delimiter, "Delimiter");
+        this.assert(delimiter, "Delimiter");
         this.assertValidDelimiter(delimiter);
 
         
@@ -20,31 +20,31 @@ export abstract class AbstractName implements Name {
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        this.assertIsNotNullOrUndefined(delimiter, "Delimiter");
+        this.assert(delimiter, "Delimiter");
 
         let amount = this.getNoComponents();
         let string: string = "";
         for(let i = 0; i < amount; i++){
             string += this.getComponent(i).concat(delimiter);
         }
-        this.assertIsNotNullOrUndefined(string, "String");
+        this.assert(string, "String");
         return string;
     }
 
     public toString(): string {
         let string: string = this.asString()
-        this.assertIsNotNullOrUndefined(string, "String")
+        this.assert(string, "String")
         return string;
     }
 
     public asDataString(): string {
         let string: string = this.asString(ESCAPE_CHARACTER + this.delimiter);
-        this.assertIsNotNullOrUndefined(string, "String");
+        this.assert(string, "String");
         return string;
     }
 
     public isEqual(other: AbstractName): boolean {
-        this.assertIsNotNullOrUndefined(other, "Other name")
+        this.assert(other, "Other name")
         this.assertValidDelimiter(other.getDelimiterCharacter());
 
         if (this.getNoComponents() !== other.getNoComponents()){
@@ -65,7 +65,7 @@ export abstract class AbstractName implements Name {
             hashCode = (hashCode << 5) - hashCode + c;
             hashCode |= 0;
         }
-        this.assertIsNotNullOrUndefined(hashCode, "Hashcode")
+        this.assert(hashCode, "Hashcode")
         return hashCode;
     }
 
@@ -76,13 +76,13 @@ export abstract class AbstractName implements Name {
 
     public isEmpty(): boolean {
         let bool: boolean = this.getNoComponents() === 0;
-        this.assertIsNotNullOrUndefined(bool, "Boolean for empty")
+        this.assert(bool, "Boolean for empty")
         return bool;
     }
 
     public getDelimiterCharacter(): string {
         let delimiter: string = this.delimiter;
-        this.assertIsNotNullOrUndefined(delimiter, "Delimiter");
+        this.assert(delimiter, "Delimiter");
         this.assertValidDelimiter(delimiter);
         return delimiter;
     }
@@ -97,7 +97,7 @@ export abstract class AbstractName implements Name {
     abstract remove(i: number): void;
 
     public concat(other: AbstractName): void {
-        this.assertIsNotNullOrUndefined(other, "Other name");
+        this.assert(other, "Other name");
         this.assertValidOther(other);
         for(let i = 0; i < other.getNoComponents(); i++){
             let other_component: string = other.getComponent(i);
@@ -108,50 +108,50 @@ export abstract class AbstractName implements Name {
 
     protected assertClassInvariants(): void {
         console.log("Del:" + this.delimiter)
-        InvalidStateException.assertNotNullOrUndefined(this.delimiter, "Delimiter");
+        InvalidStateException.assert(this.delimiter !== null && this.delimiter !== undefined, "Delimiter");
 
         let condition: boolean = this.delimiter.length === 1 && this.delimiter !== ESCAPE_CHARACTER;
-        InvalidStateException.assertCondition(condition, "Delimiter not correctly set");
+        InvalidStateException.assert(condition, "Delimiter not correctly set");
 
         //this.assertNonNegativeComponentCount(this.getNoComponents());
     }
 
     protected assertValidDelimiter(delimiter: string): void {
         let condition: boolean = delimiter.length === 1 && delimiter !== ESCAPE_CHARACTER;
-        MethodFailedException.assertCondition(condition, "Delimiter is not correctly formatted");
+        MethodFailedException.assert(condition, "Delimiter is not correctly formatted");
     }
 
     protected assertNonNegativeComponentCount(count: number): void {
         let condition: boolean = count >= 0;
-        InvalidStateException.assertCondition(condition, "Number of components cannot be negative");
+        InvalidStateException.assert(condition, "Number of components cannot be negative");
     }
 
     protected assertValidOther(other: AbstractName): void {
-        this.assertIsNotNullOrUndefined(other, `Other Name`);
+        this.assert(other, `Other Name`);
         let condition: boolean = other.asString() !== "" && other.getDelimiterCharacter() !== null;
-        InvalidStateException.assertCondition(condition, `Other name must not be empty`);
+        InvalidStateException.assert(condition, `Other name must not be empty`);
     }
 
     protected assertPostconditionAsString(result: string, componentCount: number): void {
         let condition: boolean = !(result.length === 0 && componentCount > 0);
-        MethodFailedException.assertCondition(condition, "Generated string cannot be empty if components exist");
+        MethodFailedException.assert(condition, "Generated string cannot be empty if components exist");
     }
 
-    protected assertIsNotNullOrUndefined(value: any, name: string): void {
+    protected assert(value: any, name: string): void {
         let condition: boolean = value !== null || null !== undefined;
-        IllegalArgumentException.assertCondition(condition, `${name} must not be null or undefined`);
+        IllegalArgumentException.assert(condition, `${name} must not be null or undefined`);
     }
 
     protected assertSetDelimiter(delimiter: string): void {
-        //this.assertIsNotNullOrUndefined(delimiter, `Delimiter`);
+        //this.assert(delimiter, `Delimiter`);
         let condition: boolean = this.delimiter === delimiter
-        IllegalArgumentException.assertCondition(condition, `${delimiter} must not be null or undefined`);
+        IllegalArgumentException.assert(condition, `${delimiter} must not be null or undefined`);
     }
 
     protected assertIndexInBound(i: number): void {
-        IllegalArgumentException.assertIsNotNullOrUndefined(i, "Index");
+        IllegalArgumentException.assert(i !== null && i !== undefined, "Index");
         let condition: boolean = i >= 0 && i <= this.getNoComponents();
-        IllegalArgumentException.assertCondition(condition, "Index out of bound");
+        IllegalArgumentException.assert(condition, "Index out of bound");
     }
 
 }

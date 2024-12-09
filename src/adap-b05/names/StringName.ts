@@ -12,7 +12,7 @@ export class StringName extends AbstractName {
 
     constructor(other: string, delimiter?: string) {
         super(delimiter);
-        this.assertIsNotNullOrUndefined(other, "Other string");
+        this.assert(other, "Other string");
         this.name = other;
         if (delimiter) {
             this.delimiter = delimiter;
@@ -21,8 +21,8 @@ export class StringName extends AbstractName {
     }
 
     protected doSetComponent(i: number, c: string): void {
-        this.assertIsNotNullOrUndefined(i, "Index");
-        this.assertIsNotNullOrUndefined(c, "Component");
+        this.assert(i, "Index");
+        this.assert(c, "Component");
         this.assertIndexInBound(i);
 
         let backup = new StringName(this.name, this.delimiter);
@@ -36,7 +36,7 @@ export class StringName extends AbstractName {
     }
 
     protected doSetAllComponents(components: string[]): void {
-        this.assertIsNotNullOrUndefined(components, "Components");
+        this.assert(components, "Components");
 
         this.name = components.join(this.delimiter);
 
@@ -49,12 +49,12 @@ export class StringName extends AbstractName {
 
     getNoComponents(): number {
         const length = this.doGetComponents().length;
-        this.assertIsNotNullOrUndefined(length, "Length");
+        this.assert(length, "Length");
         return length;
     }
 
     getComponent(i: number): string {
-        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assert(i, "Index");
         this.assertIndexInBound(i);
 
         const component = this.doGetComponents()[i];
@@ -67,8 +67,8 @@ export class StringName extends AbstractName {
     }
 
     insert(i: number, c: string): void {
-        this.assertIsNotNullOrUndefined(i, "Index");
-        this.assertIsNotNullOrUndefined(c, "Component");
+        this.assert(i, "Index");
+        this.assert(c, "Component");
         this.assertIndexInBound(i);
         let backup = new StringName(this.name, this.delimiter);
 
@@ -81,7 +81,7 @@ export class StringName extends AbstractName {
     }
 
     append(c: string): void {
-        this.assertIsNotNullOrUndefined(c, "Component");
+        this.assert(c, "Component");
         let backup = new StringName(this.name, this.delimiter);
 
         const components = this.doGetComponents();
@@ -93,7 +93,7 @@ export class StringName extends AbstractName {
     }
 
     remove(i: number): void {
-        this.assertIsNotNullOrUndefined(i, "Index");
+        this.assert(i, "Index");
         this.assertIndexInBound(i);
         let backup = new StringName(this.name, this.delimiter);
 
