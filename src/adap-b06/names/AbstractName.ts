@@ -17,13 +17,14 @@ export abstract class AbstractName implements Name {
         this.delimiter = delimiter;
         this.assertClassInvariants();
     }
+    
     getDelimiterCharacter(): string {
         let delimiter: string = this.delimiter;
         this.assertIsNotNullOrUndefined(delimiter, "Delimiter");
         this.assertValidDelimiter(delimiter);
         return delimiter;
     }
-
+    public abstract getComponents(): string[];
     public abstract getNoComponents(): number;
     public abstract getComponent(i: number): string;
     abstract setComponent(i: number, c: string): Name;

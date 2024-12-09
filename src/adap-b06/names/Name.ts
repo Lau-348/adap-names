@@ -49,4 +49,6 @@ export interface Name extends Equality, Cloneable, Printable {
      */
     isEmpty(): boolean;
 
+    getComponents(): string[];
+
 }

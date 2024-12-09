@@ -96,7 +96,7 @@ export class StringName extends AbstractName {
         return this.doGetComponents();
     }
 
-    isEqual(other: Object): boolean {
+    isEqual(other: Name): boolean {
         if (!(other instanceof AbstractName)) {
             return false;
         }
