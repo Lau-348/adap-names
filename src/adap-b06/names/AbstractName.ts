@@ -2,6 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
+import { MethodFailedException } from "../common/MethodFailedException";
 
 /**
  * Abstract base class for Name implementations
@@ -25,26 +26,11 @@ export abstract class AbstractName implements Name {
 
     public abstract getNoComponents(): number;
     public abstract getComponent(i: number): string;
+    abstract setComponent(i: number, c: string): Name;
 
-    public insert(i: number, c: string): Name {
-        this.assertIsNotNullOrUndefined(i, "Index");
-        this.assertIsNotNullOrUndefined(c, "Component");
-        this.assertIndexInBound(i);
-        this.assertValidComponent(c);
-        
-        return this.doInsert(i, c);
-    }
-
-    public append(c: string): Name {
-        return this.insert(this.getNoComponents(), c);
-    }
-
-    public remove(i: number): Name {
-        this.assertIsNotNullOrUndefined(i, "Index");
-        this.assertIndexInBound(i);
-        
-        return this.doRemove(i);
-    }
+    abstract insert(i: number, c: string): Name;
+    abstract append(c: string): Name;
+    abstract remove(i: number): Name;
 
     public concat(other: Name): Name {
         this.assertIsNotNullOrUndefined(other, "Other name");
@@ -60,7 +46,17 @@ export abstract class AbstractName implements Name {
     }
 
     public clone(): Name {
-        return this.doClone();
+        const cloned = { ...this };
+
+        MethodFailedException.assert(
+            cloned !== null && cloned !== undefined, 'cloned object cannot be null or undefined'
+        );
+
+        MethodFailedException.assert(
+            cloned !== this, 'cloned object is not a clone'
+        );
+
+        return cloned;
     }
 
     public isEqual(other: Object): boolean {
@@ -111,9 +107,6 @@ export abstract class AbstractName implements Name {
         return this.asString();
     }
 
-    protected abstract doInsert(i: number, c: string): Name;
-    protected abstract doRemove(i: number): Name;
-    protected abstract doClone(): Name;
 
     protected assertIsNotNullOrUndefined(value: any, name: string): void {
         IllegalArgumentException.assert(value != null && value !== undefined, `${name} must not be null or undefined`);
